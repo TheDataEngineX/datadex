@@ -23,6 +23,7 @@ class BaseConnector(ABC):
     def write(self, data: list[dict[str, Any]], **kwargs: Any) -> int:
         """Write data to the sink. Returns number of records written."""
 
+    @abstractmethod
     def close(self) -> None:
         """Close the connection."""
 
