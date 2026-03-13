@@ -1,0 +1,29 @@
+pipeline:
+  name: multi-source-join
+  schedule: "0 6 * * *"
+  source:
+    type: postgres
+    connection: "postgresql://user:pass@localhost:5432/warehouse"
+    table: orders
+    mode: full
+  transforms:
+    - join:
+        right_source:
+          type: csv_file
+          path: "data/customers.csv"
+        on: customer_id
+        how: inner
+    - deduplicate: [order_id]
+    - cast:
+        total_amount: float
+        customer_id: int
+    - derive:
+        tax_amount: "total_amount * 0.08"
+        order_year: "YEAR(order_date)"
+  quality:
+    min_completeness: 0.98
+    unique_columns: [order_id]
+  destination:
+    type: parquet
+    layer: gold
+    partition_by: [order_year]

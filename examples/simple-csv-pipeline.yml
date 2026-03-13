@@ -1,0 +1,17 @@
+pipeline:
+  name: sample-csv-pipeline
+  source:
+    type: csv_file
+    path: "data/input.csv"
+    mode: full
+  transforms:
+    - deduplicate: [id]
+    - cast:
+        amount: float
+        created_at: timestamp
+  quality:
+    min_completeness: 0.95
+    unique_columns: [id]
+  destination:
+    type: parquet
+    layer: silver

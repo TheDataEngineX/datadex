@@ -1,0 +1,86 @@
+[project]
+name = "datadex"
+version = "0.1.0"
+description = "Universal data pipeline engine — config-driven ingestion, transformation, quality, and lineage"
+authors = [
+    {name = "Jay", email = "jayapal.myaka99@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+keywords = ["data-pipeline", "etl", "data-engineering", "lineage", "dataenginex"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Database",
+]
+
+dependencies = [
+    "dataenginex>=0.6.0",
+    "click>=8.1",
+    "rich>=13.0",
+    "pydantic>=2.0",
+    "pyyaml>=6.0",
+    "croniter>=5.0",
+]
+
+[project.optional-dependencies]
+api = [
+    "fastapi>=0.115.0",
+    "uvicorn>=0.34.0",
+]
+postgres = ["psycopg[binary]>=3.2"]
+mysql = ["pymysql>=1.1"]
+s3 = ["boto3>=1.35"]
+kafka = ["confluent-kafka>=2.6"]
+all = ["datadex[api,postgres,mysql,s3,kafka]"]
+
+[project.scripts]
+datadex = "datadex.cli:main"
+
+[project.entry-points."dataenginex.plugins"]
+datadex = "datadex.plugin:DataDEXPlugin"
+
+[build-system]
+requires = ["hatchling>=1.25.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/datadex"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+    "pytest-asyncio>=1.3.0",
+    "ruff>=0.15.0",
+    "mypy>=1.19.0",
+    "poethepoet>=0.40.0",
+]
+
+[tool.uv]
+python-preference = "only-managed"
+default-groups = ["dev"]
+
+[tool.uv.sources]
+dataenginex = { path = "../dex", editable = true }
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "C90"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+pythonpath = ["src"]

@@ -1,0 +1,21 @@
+pipeline:
+  name: postgres-incremental
+  schedule: "*/15 * * * *"
+  source:
+    type: postgres
+    connection: "postgresql://user:pass@localhost:5432/analytics"
+    table: events
+    mode: incremental
+    watermark_column: updated_at
+  transforms:
+    - deduplicate: [event_id]
+    - cast:
+        amount: float
+        event_id: int
+  quality:
+    min_completeness: 0.95
+    unique_columns: [event_id]
+  destination:
+    type: parquet
+    layer: silver
+    partition_by: [event_date]
