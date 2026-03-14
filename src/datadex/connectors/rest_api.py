@@ -23,3 +23,6 @@ class RestAPIConnector(BaseConnector):
 
     def write(self, data: list[dict[str, Any]], **kwargs: Any) -> int:
         raise NotImplementedError("REST API connector is read-only")
+
+    def close(self) -> None:
+        """No-op — REST is stateless."""

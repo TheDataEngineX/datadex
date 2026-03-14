@@ -22,3 +22,6 @@ class S3Connector(BaseConnector):
 
     def write(self, data: list[dict[str, Any]], **kwargs: Any) -> int:
         raise NotImplementedError(_MSG)
+
+    def close(self) -> None:
+        raise NotImplementedError(_MSG)

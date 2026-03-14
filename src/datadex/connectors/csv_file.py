@@ -45,3 +45,6 @@ class CsvFileConnector(BaseConnector):
             writer.writerows(data)
 
         return len(data)
+
+    def close(self) -> None:
+        """Close the connection. No-op for file-based connector."""
