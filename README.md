@@ -8,12 +8,23 @@
 
 Built on [dataenginex](https://github.com/TheDataEngineX/dataenginex).
 
----
+______________________________________________________________________
 
 ## Quick Start
 
 ```bash
-pip install datadex
+# Install
+uv add datadex               # core
+uv add datadex[api]          # + FastAPI server
+
+# Install a connector
+uv add datadex[postgres]     # PostgreSQL
+uv add datadex[kafka]        # Kafka
+uv add datadex[s3]           # AWS S3
+
+# Run from source
+git clone https://github.com/TheDataEngineX/datadex && cd datadex
+uv sync --extra api
 datadex run examples/simple-csv-pipeline.yml
 ```
 
@@ -74,10 +85,14 @@ pipeline:
 
 ```bash
 git clone https://github.com/TheDataEngineX/datadex && cd datadex
-uv sync
-uv run poe test
+uv sync --extra api
+
+uv run ruff check src/ tests/          # lint
+uv run ruff format --check src/ tests/ # format check
+uv run mypy src/datadex/ --strict      # typecheck
+uv run pytest tests/ -x --tb=short -q # test
 ```
 
----
+______________________________________________________________________
 
 **Part of [TheDataEngineX](https://github.com/TheDataEngineX) ecosystem** | **License**: MIT

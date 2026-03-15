@@ -1,0 +1,71 @@
+[tool.poe]
+executor.type = "uv"
+
+# ── Installation ──────────────────────────────────────────────────────────────
+[tool.poe.tasks.install]
+cmd = "uv sync"
+help = "Install core dependencies"
+
+[tool.poe.tasks.setup]
+shell = "uv sync --extra api"
+help = "Install core + API dependencies"
+
+# ── Development ────────────────────────────────────────────────────────────────
+[tool.poe.tasks.dev]
+cmd = "datadex serve --port 8001"
+help = "Start DataDEX API server (requires DEX engine on port 8000)"
+
+# ── Testing ────────────────────────────────────────────────────────────────────
+[tool.poe.tasks.test]
+cmd = "pytest tests/ -x --tb=short -q"
+help = "Run all tests"
+
+[tool.poe.tasks.test-unit]
+cmd = "pytest tests/unit/ -x --tb=short -q"
+help = "Run unit tests only"
+
+[tool.poe.tasks.test-cov]
+cmd = "pytest tests/ --cov=datadex --cov-report=html --cov-report=xml:coverage.xml --cov-report=term-missing"
+help = "Run tests with coverage report"
+
+# ── Code Quality ───────────────────────────────────────────────────────────────
+[tool.poe.tasks.lint]
+shell = "ruff check src/ tests/"
+help = "Run ruff lint"
+
+[tool.poe.tasks.lint-fix]
+shell = "ruff check --fix src/ tests/ && ruff format src/ tests/"
+help = "Auto-fix lint issues and format code"
+
+[tool.poe.tasks.format]
+shell = "ruff format src/ tests/"
+help = "Format code with ruff"
+
+[tool.poe.tasks.typecheck]
+cmd = "mypy src/datadex/ --strict"
+help = "Run mypy strict type checking"
+
+[tool.poe.tasks.security]
+cmd = "uvx pip-audit --progress-spinner off"
+help = "Audit dependencies for known vulnerabilities"
+
+[tool.poe.tasks.check-all]
+shell = "poe lint && poe typecheck && poe test"
+help = "Run full checks: lint, typecheck, tests"
+
+[tool.poe.tasks.clean]
+shell = "find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null; rm -rf .pytest_cache .mypy_cache .ruff_cache dist build *.egg-info 2>/dev/null; echo 'Cleaned'"
+help = "Remove cache and build artifacts"
+
+# ── UV Package Manager ────────────────────────────────────────────────────────
+[tool.poe.tasks.uv-lock]
+cmd = "uv lock"
+help = "Resolve and write uv.lock"
+
+[tool.poe.tasks.uv-sync]
+cmd = "uv sync"
+help = "Install from uv.lock"
+
+[tool.poe.tasks.version]
+shell = "grep version pyproject.toml | head -1"
+help = "Show project version"
