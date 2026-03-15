@@ -51,7 +51,7 @@ jobs:
           python-version: "3.12"
       - run: uv sync --extra api
       - run: uv run pytest tests/ -x --tb=short -q --cov=datadex --cov-report=xml
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           flags: datadex
           fail_ci_if_error: false
