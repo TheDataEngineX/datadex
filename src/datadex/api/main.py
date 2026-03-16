@@ -2,14 +2,21 @@
 
 from __future__ import annotations
 
+from importlib.metadata import PackageNotFoundError, version
+
 from fastapi import FastAPI
 
 from datadex.api.routers import pipelines, quality, runs
 
+try:
+    _version = version("datadex")
+except PackageNotFoundError:
+    _version = "0.0.0"
+
 app = FastAPI(
     title="DataDEX API",
     description="Universal data pipeline engine API",
-    version="0.1.0",
+    version=_version,
 )
 
 app.include_router(pipelines.router, prefix="/pipelines", tags=["pipelines"])

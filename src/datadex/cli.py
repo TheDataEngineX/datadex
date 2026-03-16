@@ -28,8 +28,7 @@ def run(pipeline_path: str, dry_run: bool) -> None:
         return
 
     console.print(f"Running pipeline: [bold]{config.name}[/bold]")
-    # TODO: execute pipeline via engine
-    console.print("[green]✓[/green] Pipeline completed successfully")
+    raise NotImplementedError("Pipeline execution not yet implemented — engine not connected")
 
 
 @main.command()
@@ -69,8 +68,7 @@ def connectors() -> None:
 def quality(dataset: str) -> None:
     """Show quality scorecard for a dataset."""
     console.print(f"Quality scorecard for: [bold]{dataset}[/bold]")
-    # TODO: query quality framework
-    console.print("(no data yet)")
+    raise NotImplementedError("Quality framework not yet connected")
 
 
 @main.command()
@@ -78,8 +76,7 @@ def quality(dataset: str) -> None:
 def lineage(dataset: str) -> None:
     """Show lineage graph for a dataset."""
     console.print(f"Lineage for: [bold]{dataset}[/bold]")
-    # TODO: render lineage graph
-    console.print("(no lineage data yet)")
+    raise NotImplementedError("Lineage graph rendering not yet implemented")
 
 
 @main.command()
