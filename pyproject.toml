@@ -65,9 +65,6 @@ dev = [
 python-preference = "only-managed"
 default-groups = ["dev"]
 
-[tool.uv.sources]
-dataenginex = { path = "../dex", editable = true }
-
 [tool.ruff]
 line-length = 100
 target-version = "py312"
