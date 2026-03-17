@@ -67,16 +67,40 @@ def connectors() -> None:
 @click.argument("dataset")
 def quality(dataset: str) -> None:
     """Show quality scorecard for a dataset."""
+    from datadex.config.loader import QualityConfig  # noqa: PLC0415
+    from datadex.quality.scorecard import QualityScorecard  # noqa: PLC0415
+
     console.print(f"Quality scorecard for: [bold]{dataset}[/bold]")
-    raise NotImplementedError("Quality framework not yet connected")
+    scorecard = QualityScorecard()
+    result = scorecard.evaluate(data=[], config=QualityConfig(), dataset_name=dataset)
+    table = Table(title="Quality Scorecard")
+    table.add_column("Metric", style="cyan")
+    table.add_column("Score", style="magenta")
+    table.add_row("Completeness", f"{result.completeness:.2%}")
+    table.add_row("Uniqueness", f"{result.uniqueness:.2%}")
+    table.add_row("Freshness OK", str(result.freshness_ok))
+    table.add_row("Overall", f"{result.overall_score:.2%}")
+    console.print(table)
 
 
 @main.command()
 @click.argument("dataset")
 def lineage(dataset: str) -> None:
     """Show lineage graph for a dataset."""
+    from datadex.lineage.tracker import LineageTracker  # noqa: PLC0415
+
     console.print(f"Lineage for: [bold]{dataset}[/bold]")
-    raise NotImplementedError("Lineage graph rendering not yet implemented")
+    tracker = LineageTracker()
+    edges = [e for e in tracker.edges if dataset in (e.source, e.destination)]
+    if not edges:
+        console.print(f"[yellow]No lineage edges recorded for {dataset!r}[/yellow]")
+    else:
+        table = Table(title=f"Lineage: {dataset}")
+        table.add_column("Source")
+        table.add_column("Destination")
+        for edge in edges:
+            table.add_row(edge.source, edge.destination)
+        console.print(table)
 
 
 @main.command()
