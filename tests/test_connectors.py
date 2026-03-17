@@ -8,8 +8,12 @@ from pathlib import Path
 import pytest
 
 from datadex.connectors.csv_file import CsvFileConnector
+from datadex.connectors.kafka import KafkaConnector
+from datadex.connectors.mysql import MySQLConnector
 from datadex.connectors.postgres import PostgresConnector
 from datadex.connectors.s3 import S3Connector
+
+_DB_PASS = "test-placeholder"  # not a real credential
 
 
 class TestCsvFileConnector:
@@ -79,22 +83,114 @@ class TestCsvFileConnector:
 
 
 class TestPostgresConnector:
-    """Tests for PostgresConnector stub."""
+    """Tests for PostgresConnector (requires psycopg optional dep)."""
 
-    def test_connect_raises(self) -> None:
-        conn = PostgresConnector()
-        with pytest.raises(NotImplementedError, match="psycopg"):
+    def _make(self) -> PostgresConnector:
+        return PostgresConnector(host="localhost", database="test", user="u", password=_DB_PASS)
+
+    def test_connect_raises_import_error(self) -> None:
+        """connect() raises ImportError when psycopg is not installed."""
+        conn = self._make()
+        with pytest.raises((ImportError, Exception), match=r"psycopg|datadex\[postgres\]|connect"):
             conn.connect()
 
-    def test_read_raises(self) -> None:
-        conn = PostgresConnector()
-        with pytest.raises(NotImplementedError, match="psycopg"):
+    def test_read_without_connect_raises(self) -> None:
+        """read() raises RuntimeError if connect() was never called."""
+        conn = self._make()
+        with pytest.raises(RuntimeError, match="connect"):
             conn.read()
 
-    def test_write_raises(self) -> None:
-        conn = PostgresConnector()
-        with pytest.raises(NotImplementedError, match="psycopg"):
-            conn.write([])
+    def test_write_without_connect_raises(self) -> None:
+        """write() raises RuntimeError if connect() was never called."""
+        conn = self._make()
+        with pytest.raises(RuntimeError, match="connect"):
+            conn.write([{"col": "val"}])
+
+    def test_write_empty_without_connect_returns_zero(self) -> None:
+        """write([]) returns 0 without requiring a connection."""
+        conn = self._make()
+        assert conn.write([]) == 0
+
+    def test_health_check_without_connect(self) -> None:
+        """health_check() returns False when not connected."""
+        conn = self._make()
+        assert conn.health_check() is False
+
+    def test_close_without_connect_is_safe(self) -> None:
+        """close() is a no-op when never connected."""
+        conn = self._make()
+        conn.close()  # should not raise
+
+
+class TestMySQLConnector:
+    """Tests for MySQLConnector (requires pymysql optional dep)."""
+
+    def _make(self) -> MySQLConnector:
+        return MySQLConnector(host="localhost", database="test", user="u", password=_DB_PASS)
+
+    def test_connect_raises_import_error(self) -> None:
+        conn = self._make()
+        with pytest.raises((ImportError, Exception), match=r"pymysql|datadex\[mysql\]|connect"):
+            conn.connect()
+
+    def test_read_without_connect_raises(self) -> None:
+        conn = self._make()
+        with pytest.raises(RuntimeError, match="connect"):
+            conn.read()
+
+    def test_write_without_connect_raises(self) -> None:
+        conn = self._make()
+        with pytest.raises(RuntimeError, match="connect"):
+            conn.write([{"col": "val"}])
+
+    def test_write_empty_returns_zero(self) -> None:
+        conn = self._make()
+        assert conn.write([]) == 0
+
+    def test_health_check_without_connect(self) -> None:
+        conn = self._make()
+        assert conn.health_check() is False
+
+    def test_close_without_connect_is_safe(self) -> None:
+        conn = self._make()
+        conn.close()
+
+
+class TestKafkaConnector:
+    """Tests for KafkaConnector (requires confluent-kafka optional dep)."""
+
+    def _make_producer(self) -> KafkaConnector:
+        return KafkaConnector(bootstrap_servers="localhost:9092", topic="test-topic")
+
+    def _make_consumer(self) -> KafkaConnector:
+        return KafkaConnector(bootstrap_servers="localhost:9092", topics=["test-topic"])
+
+    def test_connect_raises_import_error(self) -> None:
+        conn = self._make_producer()
+        with pytest.raises((ImportError, Exception)):
+            conn.connect()
+
+    def test_read_without_connect_raises(self) -> None:
+        conn = self._make_consumer()
+        with pytest.raises(RuntimeError, match="consumer"):
+            conn.read()
+
+    def test_write_without_connect_raises(self) -> None:
+        conn = self._make_producer()
+        with pytest.raises(RuntimeError, match="producer"):
+            conn.write([{"value": "hello"}])
+
+    def test_write_empty_returns_zero(self) -> None:
+        conn = self._make_producer()
+        assert conn.write([]) == 0
+
+    def test_health_check_without_connect(self) -> None:
+        conn = self._make_producer()
+        assert conn.health_check() is False
+
+    def test_close_without_connect_is_safe(self) -> None:
+        conn = self._make_producer()
+        conn.close()
 
 
 class TestS3Connector:
