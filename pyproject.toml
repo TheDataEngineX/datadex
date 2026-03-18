@@ -1,6 +1,6 @@
 [project]
 name = "datadex"
-version = "0.1.0"
+version = "0.2.0"
 description = "Universal data pipeline engine — config-driven ingestion, transformation, quality, and lineage"
 authors = [
     {name = "Jay", email = "jayapal.myaka99@gmail.com"}
