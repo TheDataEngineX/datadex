@@ -1,6 +1,6 @@
 [project]
 name = "datadex"
-version = "0.1.0"
+version = "0.2.0"
 description = "Universal data pipeline engine — config-driven ingestion, transformation, quality, and lineage"
 authors = [
     {name = "Jay", email = "jayapal.myaka99@gmail.com"}
@@ -20,21 +20,21 @@ classifiers = [
 dependencies = [
     "dataenginex>=0.6.0",
     "click>=8.1",
-    "rich>=13.0",
+    "rich>=14.0",
     "pydantic>=2.0",
     "pyyaml>=6.0",
-    "croniter>=5.0",
+    "croniter>=6.0",
 ]
 
 [project.optional-dependencies]
 api = [
-    "fastapi>=0.115.0",
-    "uvicorn>=0.34.0",
+    "fastapi>=0.135.0",
+    "uvicorn>=0.42.0",
 ]
-postgres = ["psycopg[binary]>=3.2"]
+postgres = ["psycopg[binary]>=3.3"]
 mysql = ["pymysql>=1.1"]
 s3 = ["boto3>=1.35"]
-kafka = ["confluent-kafka>=2.6"]
+kafka = ["confluent-kafka>=2.13.0"]
 all = ["datadex[api,postgres,mysql,s3,kafka]"]
 
 [project.scripts]
