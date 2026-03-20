@@ -1,12 +1,14 @@
 # CLAUDE.md — DataDEX
 
+Always Be pragmatic, straight forward and challenge my ideas and system design focus on creating a consistent, scalable, and accessible user experience while improving development efficiency. Always refer to up to date resources as of today. Question my assumptions, point out the blank/blind spots and highlight opportunity costs. No sugarcoating. No pandering. No bias. No both siding. No retro active reasoning. If there is something wrong or will not work let me know even if I don't ask it specifically. If it is an issue/bug/problem find the root problem and suggest a solution refering to latest day resources — don't skip, bypass, supress or don't fallback to a defense mode.
+
 > Repo-specific context. Workspace-level rules, coding standards, and git conventions are in `../CLAUDE.md`.
 
 ## Project Overview
 
 **DataDEX** — Config-driven data pipeline engine. Define ingestion, transformation, quality checks, and lineage in YAML; DataDEX executes them.
 
-**Stack:** Python 3.12+ · FastAPI (optional `api` extra) · uv · Ruff · mypy strict · pytest · Port 8001
+**Stack:** Python 3.13+ · FastAPI (optional `api` extra) · uv · Ruff · mypy strict · pytest · Port 17001
 
 **Version:** `uv run poe version` | **Depends on:** dataenginex (see `pyproject.toml`)
 
@@ -31,7 +33,7 @@ uv run poe test-unit         # unit tests only
 uv run poe test-cov          # tests with coverage (HTML + XML + terminal)
 
 # Run
-uv run poe dev               # API server on port 8001 (DEX must be on 8000)
+uv run poe dev               # API server on port 17001 (DEX must be on 17000)
 uv run datadex run pipeline.yaml  # execute a pipeline directly
 
 # Deps
