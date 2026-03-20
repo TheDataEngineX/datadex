@@ -39,6 +39,7 @@ repos:
     hooks:
       - id: mypy
         additional_dependencies:
+          - dataenginex>=0.8.0
           - fastapi>=0.128.4
           - httpx>=0.28.0
           - types-pyyaml
@@ -48,6 +49,6 @@ repos:
           - uvicorn>=0.34.0
           - pydantic>=2.0
         args: ["--config-file=pyproject.toml", "--no-incremental", "src/datadex"]
-        language_version: python3.12
+        language_version: python3.13
         pass_filenames: false
         files: ^src/datadex/

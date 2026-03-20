@@ -2,14 +2,15 @@
 
 from __future__ import annotations
 
-from importlib.metadata import PackageNotFoundError, version
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as _pkg_version
 
 from fastapi import FastAPI
 
 from datadex.api.routers import pipelines, quality, runs
 
 try:
-    _version = version("datadex")
+    _version = str(_pkg_version("datadex"))
 except PackageNotFoundError:
     _version = "0.0.0"
 
