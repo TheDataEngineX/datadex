@@ -39,7 +39,7 @@ datadex status --pipeline orders     # Status of specific pipeline
 datadex connectors                   # List available connectors
 datadex quality my-dataset           # Show quality scorecard
 datadex lineage my-dataset           # Show lineage graph (terminal)
-datadex serve --port 8001            # Start DataDEX API server
+datadex serve --port 17001            # Start DataDEX API server
 ```
 
 ## Example Pipeline
